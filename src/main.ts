@@ -1,4 +1,3 @@
 function main(): void {
-    let test = new SVGGenerator(400, 300, document.getElementById('svg_test'), true);
-    test.addRectangle(5, 5, 200, 200, 'fill:black;stroke:blue');
+    let game = new Board([1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0]);
 }
