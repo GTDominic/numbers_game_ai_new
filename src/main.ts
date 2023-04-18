@@ -10,6 +10,10 @@ function aiStep(): void {
     currentAI.step();
 }
 
+function deleteRows(): void {
+    currentAI.deleteRows();
+}
+
 function aiRunAuto(): void {
     let element = <HTMLInputElement> document.getElementById('autoAI');
     if(element.checked) currentAI.step();

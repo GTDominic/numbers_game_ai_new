@@ -5,12 +5,14 @@ class Board {
         visible: boolean
     }>>;
     private startarray: Array<number>;
+    private autoDeleteRows: boolean;
 
-    constructor(array: Array<number>) {
+    constructor(array: Array<number>, autoDelete: boolean) {
         this.startarray = [...array];
         this.board = [[]];
+        this.autoDeleteRows = autoDelete;
         this.appendValues(array);
-        this.drawBoard();
+        this.drawHandler();
     }
 
     /**
@@ -61,7 +63,7 @@ class Board {
         if(!neighbor) return false;
         this.board[y1][x1].visible = false;
         this.board[y2][x2].visible = false;
-        this.drawBoard();
+        this.drawHandler();
         return true;
     }
 
@@ -76,7 +78,7 @@ class Board {
             }
         }
         this.appendValues(values);
-        this.drawBoard();
+        this.drawHandler();
     }
 
     /**
@@ -90,6 +92,23 @@ class Board {
             }
         }
         return true;
+    }
+
+    /**
+     * Checks for empty rows and deletes them
+     */
+    public deleteEmptyRows(): void {
+        let empty: boolean;
+        for(let y = this.board.length - 1; y >= 0; y--) {
+            empty = true;
+            if(this.board[y].length !== 9) continue;
+            for(let element of this.board[y]) {
+                if(element.visible) empty = false;
+            }
+            if(!empty) continue;
+            this.board.splice(y, 1);
+        }
+        this.drawHandler(true);
     }
 
     /**
@@ -149,6 +168,12 @@ class Board {
             if(this.board[this.board.length - 1].length === 9) this.board.push([]);
             this.board[this.board.length - 1].push({value: n, visible: true}); 
         }
+    }
+
+    private drawHandler(ignoreDelete: boolean = false): void {
+        if(ignoreDelete) return this.drawBoard();
+        if(this.autoDeleteRows) return this.deleteEmptyRows();
+        this.drawBoard();
     }
 
     private drawBoard(): void {
