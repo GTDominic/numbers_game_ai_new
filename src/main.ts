@@ -1,5 +1,5 @@
 let currentAI: AIAbstract;
-let aiAutoRunSpeed = 1;
+let aiAutoRunSpeed = 300;
 const aiAutoRun = setInterval(aiRunAuto, aiAutoRunSpeed);
 
 function main(): void {
