@@ -4,14 +4,26 @@
         <title>Numbers Game</title>
         <meta charset="UTF-8">
         <script src="./build/build.js"></script>
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
     </head>
     <body onload="main()">
-        <div id="game_svg"></div>
-        <p id="textout"></p>
-        <p>
+        <div class="w3-container w3-margin-bottom" id="game_svg"></div>
+        <div class="w3-container w3-margin-bottom" id="textout"></div>
+        <div class="w3-container w3-margin-bottom" id="aiOptions">
+            Startvalues: <input type="text" id="startvalues"> (Enter as: "1,2,3,4")<br>
+            <input type="checkbox" id="autoDeleteRows" value="true"> Automatically delete Rows
+        </div>
+        <div class="w3-container w3-margin-bottom" id="aiChoose">
+            <select id="selectedAI" name="aiChoose">
+                <option value="" disabled selected>Please choose</option>
+                <option value="first_found">First Found</option>
+            </select><br>
+            <button type="submit" onclick="selectAI()">Generate</button>
+        </div>
+        <div class="w3-container w3-margin-bottom" id="aiControlls">
             <button onclick="aiStep()">Run AI step</button>
             <button onclick="deleteRows()">Delete Empty Rows</button>
             <input type="checkbox" id="autoAI" name="autoAI" value="run">Run AI automatically
-        </p>
+        </div>
     </body>
 </html>

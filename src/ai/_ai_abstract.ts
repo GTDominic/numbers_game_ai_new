@@ -2,11 +2,20 @@ abstract class AIAbstract {
     protected board: Board;
 
     constructor() {
-        this.board = new Board([1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9], true);
+        let startvalueselement = <HTMLInputElement> document.getElementById('startvalues');
+        let autoDelete = <HTMLInputElement> document.getElementById('autoDeleteRows');
+        let startvalues: Array<number> = JSON.parse("[" + startvalueselement.value + "]");
+        this.board = new Board(startvalues, autoDelete.checked);
     }
     
+    /**
+     * Executes a single step
+     */
     abstract step(): void;
 
+    /**
+     * Deletes empty rows
+     */
     public deleteRows(): void {
         this.board.deleteEmptyRows();
     }

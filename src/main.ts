@@ -1,9 +1,15 @@
 let currentAI: AIAbstract;
-let aiAutoRunSpeed = 500;
+let aiAutoRunSpeed = 1;
 const aiAutoRun = setInterval(aiRunAuto, aiAutoRunSpeed);
 
 function main(): void {
-    currentAI = new AIFirstFound();
+    
+}
+
+function selectAI(): void {
+    let element = <HTMLInputElement> document.getElementById('selectedAI');
+    let ai = element.value;
+    if(ai === 'first_found') currentAI = new AIFirstFound();
 }
 
 function aiStep(): void {
