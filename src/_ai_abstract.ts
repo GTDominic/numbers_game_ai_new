@@ -6,4 +6,11 @@ abstract class AIAbstract {
     }
     
     abstract step(): void;
+
+    protected checkOrFinished(): void {
+        if(this.board.checkFinished()) {
+            document.getElementById('textout').innerHTML = 'Board finished!';
+        }
+        this.board.check();
+    }
 }

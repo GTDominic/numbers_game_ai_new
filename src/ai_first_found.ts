@@ -27,6 +27,6 @@ class AIFirstFound extends AIAbstract {
             } else sx++;
             if(!this.board.checkPosition(sx, sy)) stop = true;
         }
-        this.board.check();
+        this.checkOrFinished();
     }
 }

@@ -80,6 +80,19 @@ class Board {
     }
 
     /**
+     * checks whether visible elements exist
+     * @returns true if no visible elements / false otherwise
+     */
+    public checkFinished(): boolean {
+        for(let row of this.board) {
+            for(let element of row) {
+                if(element.visible) return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * function to find the upper neighbor of an element
      * @param x x-Coordinate of the element one above
      * @param y y-Coordinate of the element one above
