@@ -1,5 +1,6 @@
 let currentAI: AIAbstract;
-let aiAutoRunSpeed = 300;
+let aiAutoRunSpeed = 10;
+let calls = 0;
 const aiAutoRun = setInterval(aiRunAuto, aiAutoRunSpeed);
 
 function main(): void {
@@ -22,5 +23,12 @@ function deleteRows(): void {
 
 function aiRunAuto(): void {
     let element = <HTMLInputElement> document.getElementById('autoAI');
-    if(element.checked) currentAI.step();
+    let slowElement = <HTMLInputElement> document.getElementById('slowAutoAI');
+    if(calls === 1000000000000) calls = 0;
+    calls++;
+    if(element.checked) {
+        if(slowElement.checked) {
+            if(calls % 10 === 0) currentAI.step();
+        } else currentAI.step();
+    }
 }
