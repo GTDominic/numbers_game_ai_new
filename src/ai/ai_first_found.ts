@@ -1,5 +1,6 @@
 class AIFirstFound extends AIAbstract {
     public step(): void {
+        if(this.finished) return;
         let searching: boolean = false;
         let stop: boolean = false;
         let sx: number = 0;

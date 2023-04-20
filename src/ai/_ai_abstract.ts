@@ -1,5 +1,6 @@
 abstract class AIAbstract {
     protected board: Board;
+    protected finished: boolean = false;
 
     constructor() {
         let startvalueselement = <HTMLInputElement> document.getElementById('startvalues');
@@ -21,8 +22,10 @@ abstract class AIAbstract {
     }
 
     protected checkOrFinished(): void {
+        if(this.finished) return;
         if(this.board.checkFinished()) {
             document.getElementById('textout').innerHTML = 'Board finished!';
+            this.finished = true;
         }
         if(!this.board.check()) {
             document.getElementById('textout').innerHTML = 'Infinite check!';

@@ -1,5 +1,6 @@
 let currentAI: AIAbstract;
-let aiAutoRunSpeed = 10;
+const aiAutoRunSpeed = 10;
+const aiAutoRunSpeedModifier = 20;
 let calls = 0;
 const aiAutoRun = setInterval(aiRunAuto, aiAutoRunSpeed);
 
@@ -28,7 +29,7 @@ function aiRunAuto(): void {
     calls++;
     if(element.checked) {
         if(slowElement.checked) {
-            if(calls % 10 === 0) currentAI.step();
+            if(calls % aiAutoRunSpeedModifier === 0) currentAI.step();
         } else currentAI.step();
     }
 }
