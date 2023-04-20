@@ -216,6 +216,7 @@ class Board {
         document.getElementById('crossCall').innerHTML = String(this.statCrossCalled);
         document.getElementById('neighborSearch').innerHTML = String(this.statNeighbor);
         document.getElementById('callCheck').innerHTML = String(this.statCheck);
+        document.getElementById('currentRows').innerHTML = String(this.board.length);
         for(let i = 0; i <= 9; i++) {
             this.statNumber(i);
         }
