@@ -6,11 +6,13 @@ class Board {
     }>>;
     private startarray: Array<number>;
     private autoDeleteRows: boolean;
+    private checkPressed: number;
 
     constructor(array: Array<number>, autoDelete: boolean) {
         this.startarray = [...array];
         this.board = [[]];
         this.autoDeleteRows = autoDelete;
+        this.checkPressed = 0;
         this.appendValues(array);
         this.drawHandler();
     }
@@ -63,15 +65,19 @@ class Board {
         if(!neighbor) return false;
         this.board[y1][x1].visible = false;
         this.board[y2][x2].visible = false;
+        this.checkPressed = 0;
         this.drawHandler();
         return true;
     }
 
     /**
      * Adds all visible values to the end of the board
+     * @returns Whether check is executed
      */
-    public check(): void {
+    public check(): boolean {
         let values: Array<number> = [];
+        if(this.checkPressed === 2) return false;
+        this.checkPressed++;
         for(let row of this.board) {
             for(let element of row) {
                 if(element.visible) values.push(element.value);
@@ -79,6 +85,7 @@ class Board {
         }
         this.appendValues(values);
         this.drawHandler();
+        return true;
     }
 
     /**

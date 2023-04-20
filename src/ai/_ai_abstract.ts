@@ -24,6 +24,8 @@ abstract class AIAbstract {
         if(this.board.checkFinished()) {
             document.getElementById('textout').innerHTML = 'Board finished!';
         }
-        this.board.check();
+        if(!this.board.check()) {
+            document.getElementById('textout').innerHTML = 'Infinite check!';
+        }
     }
 }
