@@ -7,6 +7,11 @@ class Board {
     private startarray: Array<number>;
     private autoDeleteRows: boolean;
     private checkPressed: number;
+    private statDelRows: number = 0;
+    private statCrossedElements: number = 0;
+    private statCrossCalled: number = 0;
+    private statNeighbor: number = 0;
+    private statCheck: number = 0;
 
     constructor(array: Array<number>, autoDelete: boolean) {
         this.startarray = [...array];
@@ -51,6 +56,7 @@ class Board {
     public cross(x1: number, y1: number, x2: number, y2: number): boolean {
         let e1 = this.board[y1][x1];
         let e2 = this.board[y2][x2];
+        this.statCrossCalled++;
         if(!e1.visible || !e2.visible) return false;
         if(e1.value !== e2.value && e1.value + e2.value !== 10) return false;
         let lN = this.findLeftNeighbor(x1 - 1, y1);
@@ -65,6 +71,7 @@ class Board {
         if(!neighbor) return false;
         this.board[y1][x1].visible = false;
         this.board[y2][x2].visible = false;
+        this.statCrossedElements += 2;
         this.checkPressed = 0;
         this.drawHandler();
         return true;
@@ -75,6 +82,7 @@ class Board {
      * @returns Whether check is executed
      */
     public check(): boolean {
+        this.statCheck++;
         let values: Array<number> = [];
         if(this.checkPressed === 2) return false;
         this.checkPressed++;
@@ -113,6 +121,7 @@ class Board {
                 if(element.visible) empty = false;
             }
             if(!empty) continue;
+            this.statDelRows++;
             this.board.splice(y, 1);
         }
         this.drawHandler(true);
@@ -125,6 +134,7 @@ class Board {
      * @returns Coordinate of the neighbor / null if no neighbor
      */
     public findTopNeighbor(x: number, y: number): {x: number, y: number} {
+        this.statNeighbor++;
         if(y < 0) return null;
         if(!this.board[y][x].visible) return this.findTopNeighbor(x, y - 1);
         return {x, y};
@@ -137,6 +147,7 @@ class Board {
      * @returns Coordinate of the neighbor / null if no neighbor
      */
     public findBottomNeighbor(x: number, y: number): {x: number, y: number} {
+        this.statNeighbor++;
         if(y >= this.board.length) return null;
         if(y === this.board.length - 1 && x >= this.board[y].length) return null;
         if(!this.board[y][x].visible) return this.findBottomNeighbor(x, y + 1);
@@ -150,6 +161,7 @@ class Board {
      * @returns Coordinate of the neighbor / null if no neighbor
      */
     public findRightNeighbor(x: number, y: number): {x: number, y: number} {
+        this.statNeighbor++;
         if(y >= this.board.length) return null;
         if(y === this.board.length - 1 && x >= this.board[y].length) return null;
         if(x > 8) return this.findRightNeighbor(0, y + 1);
@@ -164,6 +176,7 @@ class Board {
      * @returns Coordinate of the neighbor / null if no neighbor
      */
     public findLeftNeighbor(x: number, y: number): {x: number, y: number} {
+        this.statNeighbor++;
         if(y < 0) return null;
         if(x < 0) return this.findLeftNeighbor(8, y - 1);
         if(!this.board[y][x].visible) return this.findLeftNeighbor(x - 1, y);
@@ -194,5 +207,25 @@ class Board {
                 svg.addText(x * 30 + 15, y * 30 + 15, String(this.board[y][x].value), `stroke:none;fill:${fill};font-family:Arial;text-anchor:middle;dominant-baseline:middle`);
             }
         }
+        this.refreshStats();
+    }
+
+    private refreshStats(): void {
+        document.getElementById('delRows').innerHTML = String(this.statDelRows);
+        document.getElementById('crossedElements').innerHTML = String(this.statCrossedElements);
+        document.getElementById('crossCall').innerHTML = String(this.statCrossCalled);
+        document.getElementById('neighborSearch').innerHTML = String(this.statNeighbor);
+        document.getElementById('callCheck').innerHTML = String(this.statCheck);
+        for(let i = 0; i <= 9; i++) {
+            this.statNumber(i);
+        }
+    }
+
+    private statNumber(num: number): void {
+        let count: number = 0;
+        for(let row of this.board) for(let element of row) {
+            if(element.visible && element.value === num) count++;
+        }
+        document.getElementById(`num${num}`).innerHTML = String(count);
     }
 }
