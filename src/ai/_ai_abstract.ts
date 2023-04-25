@@ -4,8 +4,9 @@ abstract class AIAbstract {
 
     constructor() {
         let startvalueselement = <HTMLInputElement> document.getElementById('startvalues');
+        let startelvalue: string = startvalueselement.value.replace(/ /g, ",");       
         let autoDelete = <HTMLInputElement> document.getElementById('autoDeleteRows');
-        let startvalues: Array<number> = JSON.parse("[" + startvalueselement.value + "]");
+        let startvalues: Array<number> = JSON.parse("[" + startelvalue + "]");
         this.board = new Board(startvalues, autoDelete.checked);
     }
     
