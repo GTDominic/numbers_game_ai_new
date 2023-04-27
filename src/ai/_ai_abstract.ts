@@ -25,7 +25,7 @@ abstract class AIAbstract {
     protected checkOrFinished(): void {
         if(this.finished) return;
         if(this.board.checkFinished()) {
-            document.getElementById('textout').innerText = 'Board finished!';
+            document.getElementById('textout').innerHTML = '<p class="w3-padding-large">Board finished!</p>';
             this.finished = true;
             return;
         }
