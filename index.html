@@ -14,52 +14,63 @@
             <div class="w3-half">
                 <div class="w3-red w3-card w3-margin" id="textout"></div>
                 <div class="w3-container w3-margin-bottom" id="aiOptions">
-                    Startvalues: <input type="text" id="startvalues" /> (Enter as: "1,2,3,4")<br />
-                    <input type="checkbox" id="autoDeleteRows" value="true" /> Automatically delete Rows
+                    Startvalues: <input type="text" id="startvalues" /> (Enter as: "1,2,3,4" or "1 2 3 4")<br />
+                    <input type="checkbox" id="autoDeleteRows" value="true" /> Automatically delete empty Rows
                 </div>
                 <div class="w3-container w3-margin-bottom" id="aiChoose">
+                    AI: 
                     <select id="selectedAI" name="aiChoose">
                         <option value="" disabled selected>Please choose</option>
-                        <option value="first_found">First Found</option></select
-                    ><br />
+                        <option value="first_found">First Found</option>
+                    </select>
                     <button type="submit" onclick="selectAI()">Generate</button>
                 </div>
+                <hr>
                 <div class="w3-container w3-margin-bottom" id="aiControlls">
                     <button onclick="aiStep()">Run AI step</button>
                     <button onclick="deleteRows()">Delete Empty Rows</button>
                     <input type="checkbox" id="autoAI" name="autoAI" value="run" />Run AI automatically |
                     <input type="checkbox" id="slowAutoAI" />Slow
                 </div>
+                <hr>
                 <div class="w3-container w3-margin-bottom" id="statistics">
-                    <p>Current numbers:</p>
-                    <p>
-                        0:
-                        <span id="num0"></span>
-                        | 1:
-                        <span id="num1"></span>
-                        | 2:
-                        <span id="num2"></span>
-                        | 3:
-                        <span id="num3"></span>
-                        | 4:
-                        <span id="num4"></span>
-                        | 5:
-                        <span id="num5"></span>
-                        | 6:
-                        <span id="num6"></span>
-                        | 7:
-                        <span id="num7"></span>
-                        | 8:
-                        <span id="num8"></span>
-                        | 9:
-                        <span id="num9"></span>
-                    </p>
-                    <p>Current rows: <span id="currentRows"></span></p>
-                    <p>Deleted rows: <span id="delRows"></span></p>
-                    <p>Check called: <span id="callCheck"></span></p>
-                    <p>Crossed elements: <span id="crossedElements"></span></p>
-                    <p>Cross called: <span id="crossCall"></span></p>
-                    <p>Neighbor search called: <span id="neighborSearch"></span></p>
+                    <div class="w3-row">
+                        <div class="w3-half">
+                            <table class="w3-table-all">
+                                <tr>
+                                    <td>Current rows</td>
+                                    <td><span id="currentRows"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Deleted rows</td>
+                                    <td><span id="delRows"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Check called</td>
+                                    <td><span id="callCheck"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Crossed elements</td>
+                                    <td><span id="crossedElements"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Cross called</td>
+                                    <td><span id="crossCall"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Neighbor search called</td>
+                                    <td><span id="neighborSearch"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Shuffled</td>
+                                    <td><span id="shuffled"></span></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="w3-half">
+                            <table class="w3-table-all" id="numberTable"></table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

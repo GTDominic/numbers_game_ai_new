@@ -14,6 +14,7 @@ class Board {
     private statCrossCalled: number = 0;
     private statNeighbor: number = 0;
     private statCheck: number = 0;
+    private statShuffled: number = 0;
 
     constructor(array: Array<number>, autoDelete: boolean) {
         this.startarray = [...array];
@@ -107,6 +108,7 @@ class Board {
         this.board = [[]];
         this.appendValues(values);
         this.checkPressed = 0;
+        this.statShuffled++;
         this.drawHandler();
     }
 
@@ -235,14 +237,28 @@ class Board {
         document.getElementById("neighborSearch").innerHTML = String(this.statNeighbor);
         document.getElementById("callCheck").innerHTML = String(this.statCheck);
         document.getElementById("currentRows").innerHTML = String(this.board.length);
-        for (let i = 0; i <= 9; i++) {
-            this.statNumber(i);
-        }
+        document.getElementById("shuffled").innerHTML = String(this.statShuffled);
+        this.statNumber();
     }
 
-    private statNumber(num: number): void {
-        let count: number = 0;
-        for (let row of this.board) for (let element of row) if (element.visible && element.value === num) count++;
-        document.getElementById(`num${num}`).innerHTML = String(count);
+    private statNumber(): void {
+        let table = document.getElementById("numberTable");
+        let tableContent = `
+            <tr>
+                <th>Number</th>
+                <th>Amount</th>
+            <tr>
+        `;
+        for (let num = 0; num <= 9; num++) {
+            let count: number = 0;
+            for (let row of this.board) for (let element of row) if (element.visible && element.value === num) count++;
+            tableContent += `
+                <tr>
+                    <td>${num}</td>
+                    <td>${count}</td>
+                <tr>
+            `;
+        }
+        table.innerHTML = tableContent;
     }
 }
