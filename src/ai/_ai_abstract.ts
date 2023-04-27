@@ -25,11 +25,10 @@ abstract class AIAbstract {
     protected checkOrFinished(): void {
         if(this.finished) return;
         if(this.board.checkFinished()) {
-            document.getElementById('textout').innerHTML = 'Board finished!';
+            document.getElementById('textout').innerText = 'Board finished!';
             this.finished = true;
+            return;
         }
-        if(!this.board.check()) {
-            document.getElementById('textout').innerHTML = 'Infinite check!';
-        }
+        this.board.check()
     }
 }

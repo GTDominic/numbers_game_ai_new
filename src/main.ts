@@ -2,14 +2,11 @@ let currentAI: AIAbstract;
 let calls = 0;
 const aiAutoRun = setInterval(aiRunAuto, config.aiAutoRunSpeed);
 
-function main(): void {
-    
-}
-
 function selectAI(): void {
     let element = <HTMLInputElement> document.getElementById('selectedAI');
     let ai = element.value;
     if(ai === 'first_found') currentAI = new AIFirstFound();
+    document.getElementById('textout').innerText = '';
 }
 
 function aiStep(): void {
