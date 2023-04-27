@@ -79,12 +79,11 @@ class Board {
 
     /**
      * Adds all visible values to the end of the board
-     * @returns Whether check is executed
      */
     public check(): boolean {
         this.statCheck++;
         let values: Array<number> = [];
-        if(this.checkPressed === 2) return false;
+        if(this.checkPressed === 2) this.shuffle();
         this.checkPressed++;
         for(let row of this.board) {
             for(let element of row) {
@@ -94,6 +93,19 @@ class Board {
         this.appendValues(values);
         this.drawHandler();
         return true;
+    }
+
+    /**
+     * Shuffles the board
+     */
+    public shuffle(): void {
+        let values: Array<number> = [];
+        for(let row of this.board) for(let element of row) if(element.visible) values.push(element.value);
+        G_shuffleNumberArray(values);
+        this.board = [[]];
+        this.appendValues(values);
+        this.checkPressed = 0;
+        this.drawHandler();
     }
 
     /**
