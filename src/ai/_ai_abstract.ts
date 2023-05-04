@@ -3,13 +3,13 @@ abstract class AIAbstract {
     protected finished: boolean = false;
 
     constructor() {
-        let startvalueselement = <HTMLInputElement> document.getElementById('startvalues');
-        let startelvalue: string = startvalueselement.value.replace(/ /g, ",");       
-        let autoDelete = <HTMLInputElement> document.getElementById('autoDeleteRows');
+        let startvalueselement = <HTMLInputElement>document.getElementById("startvalues");
+        let startelvalue: string = startvalueselement.value.replace(/ /g, ",");
+        let autoDelete = <HTMLInputElement>document.getElementById("autoDeleteRows");
         let startvalues: Array<number> = JSON.parse("[" + startelvalue + "]");
         this.board = new Board(startvalues, autoDelete.checked);
     }
-    
+
     /**
      * Executes a single step
      */
@@ -23,13 +23,12 @@ abstract class AIAbstract {
     }
 
     protected checkOrFinished(): void {
-        if(this.finished) return;
-        if(this.board.checkFinished()) {
-            document.getElementById('textout').innerHTML = 'Board finished!';
+        if (this.finished) return;
+        if (this.board.checkFinished()) {
+            document.getElementById("textout").innerHTML = '<p class="w3-padding-large">Board finished!</p>';
             this.finished = true;
+            return;
         }
-        if(!this.board.check()) {
-            document.getElementById('textout').innerHTML = 'Infinite check!';
-        }
+        this.board.check();
     }
 }
