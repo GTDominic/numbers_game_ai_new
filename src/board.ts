@@ -37,6 +37,14 @@ class Board {
     }
 
     /**
+     * Function to get the y-size of the board
+     * @returns Length of the board
+     */
+    public getSize(): number {
+        return this.board.length;
+    }
+
+    /**
      * Checks whether Position is part of board
      * @param x x-Position
      * @param y y-Position
