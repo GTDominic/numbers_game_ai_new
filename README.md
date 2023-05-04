@@ -20,3 +20,5 @@ Create your own class which extends the `AIAbstract` class.
 This class needs a `public step(): void` method which is executed once every step.  
 You can use the `protected checkOrFinished(): void()` method to check for finished.  
 If finished `protected finished: boolean` will be true.
+
+To use the algorithm, add an option to `index.html` and to `main.ts`.
