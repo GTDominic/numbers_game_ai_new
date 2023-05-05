@@ -235,6 +235,11 @@ class Board {
     }
 
     private drawBoard(): void {
+        let noDraw = <HTMLInputElement>document.getElementById("noSVG");
+        if(noDraw.checked) {
+            this.refreshStats();
+            return;
+        }
         let svg = new SVGGenerator(9 * 30, this.board.length * 30, document.getElementById("game_svg"), true);
         for (let y = 0; y < this.board.length; y++) {
             for (let x = 0; x < this.board[y].length; x++) {
