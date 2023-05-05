@@ -123,9 +123,9 @@ class AIWeighed extends AIAbstract {
                 c.prio = 1;
                 return;
             }
-        console.warn("No code for combinations!");
-        this.currentStep++;
-        // this.firstFound();
+        // console.warn("No code for combinations!");
+        // this.currentStep++;
+        this.firstFound();
     }
 
     private findTElements(): boolean {
