@@ -207,6 +207,20 @@ class Board {
         return { x, y };
     }
 
+    /**
+     * Refreshes the stats table
+     */
+    public refreshStats(): void {
+        document.getElementById("delRows").innerHTML = String(this.statDelRows);
+        document.getElementById("crossedElements").innerHTML = String(this.statCrossedElements);
+        document.getElementById("crossCall").innerHTML = String(this.statCrossCalled);
+        document.getElementById("neighborSearch").innerHTML = String(this.statNeighbor);
+        document.getElementById("callCheck").innerHTML = String(this.statCheck);
+        document.getElementById("currentRows").innerHTML = String(this.board.length);
+        document.getElementById("shuffled").innerHTML = String(this.statShuffled);
+        this.statNumber();
+    }
+
     private appendValues(array: Array<number>): void {
         for (let n of array) {
             if (this.board[this.board.length - 1].length === 9) this.board.push([]);
@@ -236,17 +250,6 @@ class Board {
             }
         }
         this.refreshStats();
-    }
-
-    private refreshStats(): void {
-        document.getElementById("delRows").innerHTML = String(this.statDelRows);
-        document.getElementById("crossedElements").innerHTML = String(this.statCrossedElements);
-        document.getElementById("crossCall").innerHTML = String(this.statCrossCalled);
-        document.getElementById("neighborSearch").innerHTML = String(this.statNeighbor);
-        document.getElementById("callCheck").innerHTML = String(this.statCheck);
-        document.getElementById("currentRows").innerHTML = String(this.board.length);
-        document.getElementById("shuffled").innerHTML = String(this.statShuffled);
-        this.statNumber();
     }
 
     private statNumber(): void {
