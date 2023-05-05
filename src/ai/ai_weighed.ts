@@ -86,7 +86,7 @@ class AIWeighed extends AIAbstract {
 
     private weigh1Neighbor(i: number): void {
         let n = this.combinations[i].neighbours[0];
-        let j = this.findElement(n.x, n.y);
+        let j = this.findElement(n);
         this.combinations[i].prio = this.combinations[j].neighbours.length;
     }
 
@@ -94,7 +94,7 @@ class AIWeighed extends AIAbstract {
         let minPrio = this.combinations[i].neighbours.length;
         for (let j = 0; j < this.combinations[i].neighbours.length; j++) {
             let n = this.combinations[i].neighbours[j];
-            let k = this.findElement(n.x, n.y);
+            let k = this.findElement(n);
             let kl = this.combinations[k].neighbours.length;
             minPrio = kl > minPrio ? kl : minPrio;
         }
@@ -116,18 +116,42 @@ class AIWeighed extends AIAbstract {
                 return;
             }
         }
+        let found = this.findTElements();
+        if(found) return;
         for (let c of this.combinations)
-            if (c.prio === 2 && c.neighbours.length === 1) {
+            if (c.prio >= 2 && c.neighbours.length === 1) {
                 c.prio = 1;
                 return;
             }
-        console.log("No code for combinations!");
-        this.firstFound();
+        console.warn("No code for combinations!");
+        this.currentStep++;
+        // this.firstFound();
     }
 
-    private findElement(x: number, y: number): number {
+    private findTElements(): boolean {
+        for(let c of this.combinations) {
+            if(c.prio !== 3 || c.neighbours.length !== 3) continue;
+            let correct = true;
+            for(let n of c.neighbours) {
+                if(this.combinations[this.findElement(n)].neighbours.length !== 1) correct = false;
+            }
+            if(!correct) continue;
+            let directions: Array<string> = [];
+            for(let n of c.neighbours) {
+                directions.push(n.type);
+            }
+            if(G_compareArrays(directions, ["t","l","b"])) this.combinations[this.findElement(c.neighbours[1])].prio = 1;
+            if(G_compareArrays(directions, ["t","l","r"])) this.combinations[this.findElement(c.neighbours[0])].prio = 1;
+            if(G_compareArrays(directions, ["t","b","r"])) this.combinations[this.findElement(c.neighbours[2])].prio = 1;
+            if(G_compareArrays(directions, ["l","b","r"])) this.combinations[this.findElement(c.neighbours[1])].prio = 1;
+            return true;
+        }
+        return false;
+    }
+
+    private findElement(e: {x: number, y: number}): number {
         for (let i = 0; i < this.combinations.length; i++) {
-            if (this.combinations[i].element.x === x && this.combinations[i].element.y === y) return i;
+            if (this.combinations[i].element.x === e.x && this.combinations[i].element.y === e.y) return i;
         }
     }
 

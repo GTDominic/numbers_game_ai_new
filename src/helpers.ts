@@ -22,3 +22,17 @@ function G_shuffleNumberArray(array: Array<number>): Array<number> {
     }
     return array;
 }
+
+/**
+ * Compares two arrays
+ * @param array1 
+ * @param array2 
+ * @returns true if equal, false otherwise
+ */
+function G_compareArrays(array1: Array<number | string>, array2: Array<number | string>): boolean {
+    if(array1.length !== array2.length) return false;
+    for(let i = 0; i < array1.length; i++) {
+        if(array1[i] !== array2[i]) return false;
+    }
+    return true;
+}
