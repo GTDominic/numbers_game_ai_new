@@ -112,8 +112,8 @@ class AIWeighed extends AIAbstract {
     private executeStep(): void {
         console.log(this.combinations);
         this.findTElements();
-        for(let c of this.combinations) {
-            if(c.prio !== 0) continue;
+        for (let c of this.combinations) {
+            if (c.prio !== 0) continue;
             let crossed = this.board.cross(c.element.x, c.element.y, c.neighbours[0].x, c.neighbours[0].y);
             if (crossed) {
                 this.currentStep = 0;
@@ -132,7 +132,10 @@ class AIWeighed extends AIAbstract {
         this.find3Elements();
         let found = this.find4Elements();
         if (found) return;
+        found = this.findChains();
+        if (found) return;
         console.warn("No code for combinations!");
+        return;
         for (let prio = 1; prio <= 5; prio++) {
             for (let c of this.combinations) {
                 if (c.prio !== prio) continue;
@@ -184,27 +187,46 @@ class AIWeighed extends AIAbstract {
     private find4Elements(): boolean {
         for (let c of this.combinations) {
             if (c.prio !== 2 || c.neighbours.length !== 2) continue;
-            let i1 = this.findElement(c.neighbours[0]);
-            let i2 = this.findElement(c.neighbours[1]);
-            let i3;
-            if (this.combinations[i1].neighbours.length === 1) {
-                if (this.combinations[i2].neighbours.length === 2) {
-                    if (this.checkIdentical(this.combinations[i2].neighbours[0], c.element))
-                        i3 = this.findElement(this.combinations[i2].neighbours[1]);
-                    else i3 = this.findElement(this.combinations[i2].neighbours[0]);
-                } else continue;
-            } else if (this.combinations[i1].neighbours.length === 2) {
-                if (this.combinations[i2].neighbours.length === 1) {
-                    if (this.checkIdentical(this.combinations[i1].neighbours[0], c.element))
-                        i3 = this.findElement(this.combinations[i1].neighbours[1]);
-                    else i3 = this.findElement(this.combinations[i1].neighbours[0]);
-                } else continue;
-            } else console.error("Unexpected Error");
-            if (this.combinations[i3].neighbours.length !== 1) continue;
-            if (this.combinations[i1].neighbours.length === 1) this.combinations[i1].prio = 1;
-            else this.combinations[i2].prio = 2;
+            let e1;
+            let e2 = c;
+            let e3;
+            let e4;
+            let n1 = this.combinations[this.findElement(e2.neighbours[0])];
+            let n2 = this.combinations[this.findElement(e2.neighbours[1])];
+            if (n1.neighbours.length === 1) {
+                e1 = n1;
+                e3 = n2;
+            } else {
+                e1 = n2;
+                e3 = n1;
+            }
+            if (e3.neighbours.length !== 2 || e1.neighbours.length !== 1) continue;
+            n1 = this.combinations[this.findElement(e3.neighbours[0])];
+            n2 = this.combinations[this.findElement(e3.neighbours[1])];
+            if (n1.neighbours.length === 1) e4 = n1;
+            else e4 = n2;
+            if (e4.neighbours.length !== 1) continue;
+            e1.prio = 0;
             return true;
         }
+        return false;
+    }
+
+    private findChains(): boolean {
+        let chains: Array<
+            Array<{
+                element: { x: number; y: number };
+                neighbours: Array<{ x: number; y: number; type: string }>;
+                prio: number;
+            }>
+        > = [];
+        for (let c of this.combinations) {
+            if (c.neighbours.length !== 1) continue;
+            for (let chain of chains) for (let element of chain) if (this.checkIdentical(element.element, c.element)) continue;
+            chains.push([c]);
+            
+        }
+        console.log(chains);
         return false;
     }
 
