@@ -222,12 +222,43 @@ class AIWeighed extends AIAbstract {
         > = [];
         for (let c of this.combinations) {
             if (c.neighbours.length !== 1) continue;
-            for (let chain of chains) for (let element of chain) if (this.checkIdentical(element.element, c.element)) continue;
+            let error = false;
+            for (let chain of chains) for (let element of chain) if (this.checkIdentical(element.element, c.element)) error = true;
+            if (error) continue;
             chains.push([c]);
-            
+            let j = chains.length - 1;
+            chains[j].push(this.combinations[this.findElement(c.neighbours[0])]);
+            if (chains[j][1].neighbours.length !== 2) {
+                chains.pop();
+                continue;
+            }
+            let i = 1;
+            while (chains[j][i].neighbours.length === 2) {
+                let o = chains[j][i - 1];
+                let n1 = this.combinations[this.findElement(chains[j][i].neighbours[0])];
+                let n2 = this.combinations[this.findElement(chains[j][i].neighbours[1])];
+                if (this.checkIdentical(o.element, n1.element)) chains[j].push(n2);
+                else chains[j].push(n1);
+                i++;
+                if (chains[j][i].neighbours.length > 2) {
+                    chains.pop();
+                    error = true;
+                    break;
+                }
+            }
+            if (error) continue;
         }
-        console.log(chains);
-        return false;
+        if (chains.length === 0) return false;
+        let even = false;
+        for(let chain of chains) {
+            if(chain.length % 2 !== 0) {
+                for(let element of chain) element.prio = 5;
+            } else {
+                chain[0].prio = 0;
+                even = true;
+            }
+        }
+        return even;
     }
 
     private findElement(e: { x: number; y: number }): number {
