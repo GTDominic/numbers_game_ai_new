@@ -37,6 +37,14 @@ class Board {
     }
 
     /**
+     * Function to get the y-size of the board
+     * @returns Length of the board
+     */
+    public getSize(): number {
+        return this.board.length;
+    }
+
+    /**
      * Checks whether Position is part of board
      * @param x x-Position
      * @param y y-Position
@@ -199,6 +207,20 @@ class Board {
         return { x, y };
     }
 
+    /**
+     * Refreshes the stats table
+     */
+    public refreshStats(): void {
+        document.getElementById("delRows").innerHTML = String(this.statDelRows);
+        document.getElementById("crossedElements").innerHTML = String(this.statCrossedElements);
+        document.getElementById("crossCall").innerHTML = String(this.statCrossCalled);
+        document.getElementById("neighborSearch").innerHTML = String(this.statNeighbor);
+        document.getElementById("callCheck").innerHTML = String(this.statCheck);
+        document.getElementById("currentRows").innerHTML = String(this.board.length);
+        document.getElementById("shuffled").innerHTML = String(this.statShuffled);
+        this.statNumber();
+    }
+
     private appendValues(array: Array<number>): void {
         for (let n of array) {
             if (this.board[this.board.length - 1].length === 9) this.board.push([]);
@@ -213,6 +235,11 @@ class Board {
     }
 
     private drawBoard(): void {
+        let noDraw = <HTMLInputElement>document.getElementById("noSVG");
+        if(noDraw.checked) {
+            this.refreshStats();
+            return;
+        }
         let svg = new SVGGenerator(9 * 30, this.board.length * 30, document.getElementById("game_svg"), true);
         for (let y = 0; y < this.board.length; y++) {
             for (let x = 0; x < this.board[y].length; x++) {
@@ -228,17 +255,6 @@ class Board {
             }
         }
         this.refreshStats();
-    }
-
-    private refreshStats(): void {
-        document.getElementById("delRows").innerHTML = String(this.statDelRows);
-        document.getElementById("crossedElements").innerHTML = String(this.statCrossedElements);
-        document.getElementById("crossCall").innerHTML = String(this.statCrossCalled);
-        document.getElementById("neighborSearch").innerHTML = String(this.statNeighbor);
-        document.getElementById("callCheck").innerHTML = String(this.statCheck);
-        document.getElementById("currentRows").innerHTML = String(this.board.length);
-        document.getElementById("shuffled").innerHTML = String(this.statShuffled);
-        this.statNumber();
     }
 
     private statNumber(): void {

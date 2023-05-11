@@ -6,6 +6,7 @@ function selectAI(): void {
     let element = <HTMLInputElement>document.getElementById("selectedAI");
     let ai = element.value;
     if (ai === "first_found") currentAI = new AIFirstFound();
+    if (ai === "weighed") currentAI = new AIWeighed();
     document.getElementById("textout").innerHTML = "";
 }
 
