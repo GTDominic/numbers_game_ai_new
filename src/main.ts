@@ -7,6 +7,7 @@ function selectAI(): void {
     let ai = element.value;
     if (ai === "first_found") currentAI = new AIFirstFound();
     if (ai === "weighed") currentAI = new AIWeighed();
+    if (ai === "tree") currentAI = new AITree();
     document.getElementById("textout").innerHTML = "";
 }
 
