@@ -110,7 +110,6 @@ class AIWeighed extends AIAbstract {
     }
 
     private executeStep(): void {
-        console.log(this.combinations);
         this.findTElements();
         for (let c of this.combinations) {
             if (c.prio !== 0) continue;
@@ -134,18 +133,11 @@ class AIWeighed extends AIAbstract {
         if (found) return;
         found = this.findChains();
         if (found) return;
-        console.warn("No code for combinations!");
-        return;
-        for (let prio = 1; prio <= 5; prio++) {
-            for (let c of this.combinations) {
-                if (c.prio !== prio) continue;
-                let crossed = this.board.cross(c.element.x, c.element.y, c.neighbours[0].x, c.neighbours[0].y);
-                if (crossed) {
-                    this.currentStep = 0;
-                    return;
-                }
-            }
-        }
+        found = this.find1Neighbour();
+        if (found) return;
+        found = this.crossPrio5();
+        if (found) return;
+        this.combinations[0].prio = 0;
     }
 
     private findTElements(): void {
@@ -153,17 +145,17 @@ class AIWeighed extends AIAbstract {
             if (c.prio !== 3 || c.neighbours.length !== 3) continue;
             let correct = true;
             for (let n of c.neighbours) {
-                if (this.combinations[this.findElement(n)].neighbours.length !== 1) correct = false;
+                if (this.getElement(n).neighbours.length !== 1) correct = false;
             }
             if (!correct) continue;
             let directions: Array<string> = [];
             for (let n of c.neighbours) {
                 directions.push(n.type);
             }
-            if (G_compareArrays(directions, ["t", "l", "b"])) this.combinations[this.findElement(c.neighbours[1])].prio = 0;
-            if (G_compareArrays(directions, ["t", "l", "r"])) this.combinations[this.findElement(c.neighbours[0])].prio = 0;
-            if (G_compareArrays(directions, ["t", "b", "r"])) this.combinations[this.findElement(c.neighbours[2])].prio = 0;
-            if (G_compareArrays(directions, ["l", "b", "r"])) this.combinations[this.findElement(c.neighbours[1])].prio = 0;
+            if (G_compareArrays(directions, ["t", "l", "b"])) this.getElement(c.neighbours[1]).prio = 0;
+            if (G_compareArrays(directions, ["t", "l", "r"])) this.getElement(c.neighbours[0]).prio = 0;
+            if (G_compareArrays(directions, ["t", "b", "r"])) this.getElement(c.neighbours[2]).prio = 0;
+            if (G_compareArrays(directions, ["l", "b", "r"])) this.getElement(c.neighbours[1]).prio = 0;
             return;
         }
     }
@@ -174,12 +166,12 @@ class AIWeighed extends AIAbstract {
             if (c.prio !== 2 || c.neighbours.length !== 2) continue;
             let correct = true;
             for (let n of c.neighbours) {
-                if (this.combinations[this.findElement(n)].neighbours.length !== 1) correct = false;
+                if (this.getElement(n).neighbours.length !== 1) correct = false;
             }
             if (!correct) continue;
             c.prio = 5;
             for (let n of c.neighbours) {
-                this.combinations[this.findElement(n)].prio = 5;
+                this.getElement(n).prio = 5;
             }
         }
     }
@@ -191,8 +183,8 @@ class AIWeighed extends AIAbstract {
             let e2 = c;
             let e3;
             let e4;
-            let n1 = this.combinations[this.findElement(e2.neighbours[0])];
-            let n2 = this.combinations[this.findElement(e2.neighbours[1])];
+            let n1 = this.getElement(e2.neighbours[0]);
+            let n2 = this.getElement(e2.neighbours[1]);
             if (n1.neighbours.length === 1) {
                 e1 = n1;
                 e3 = n2;
@@ -201,8 +193,8 @@ class AIWeighed extends AIAbstract {
                 e3 = n1;
             }
             if (e3.neighbours.length !== 2 || e1.neighbours.length !== 1) continue;
-            n1 = this.combinations[this.findElement(e3.neighbours[0])];
-            n2 = this.combinations[this.findElement(e3.neighbours[1])];
+            n1 = this.getElement(e3.neighbours[0]);
+            n2 = this.getElement(e3.neighbours[1]);
             if (n1.neighbours.length === 1) e4 = n1;
             else e4 = n2;
             if (e4.neighbours.length !== 1) continue;
@@ -227,7 +219,7 @@ class AIWeighed extends AIAbstract {
             if (error) continue;
             chains.push([c]);
             let j = chains.length - 1;
-            chains[j].push(this.combinations[this.findElement(c.neighbours[0])]);
+            chains[j].push(this.getElement(c.neighbours[0]));
             if (chains[j][1].neighbours.length !== 2) {
                 chains.pop();
                 continue;
@@ -235,8 +227,8 @@ class AIWeighed extends AIAbstract {
             let i = 1;
             while (chains[j][i].neighbours.length === 2) {
                 let o = chains[j][i - 1];
-                let n1 = this.combinations[this.findElement(chains[j][i].neighbours[0])];
-                let n2 = this.combinations[this.findElement(chains[j][i].neighbours[1])];
+                let n1 = this.getElement(chains[j][i].neighbours[0]);
+                let n2 = this.getElement(chains[j][i].neighbours[1]);
                 if (this.checkIdentical(o.element, n1.element)) chains[j].push(n2);
                 else chains[j].push(n1);
                 i++;
@@ -250,9 +242,9 @@ class AIWeighed extends AIAbstract {
         }
         if (chains.length === 0) return false;
         let even = false;
-        for(let chain of chains) {
-            if(chain.length % 2 !== 0) {
-                for(let element of chain) element.prio = 5;
+        for (let chain of chains) {
+            if (chain.length % 2 !== 0) {
+                for (let element of chain) element.prio = 5;
             } else {
                 chain[0].prio = 0;
                 even = true;
@@ -261,10 +253,38 @@ class AIWeighed extends AIAbstract {
         return even;
     }
 
+    private crossPrio5(): boolean {
+        for (let c of this.combinations) {
+            if (c.prio !== 5 || c.neighbours.length !== 1) continue;
+            let crossed = this.board.cross(c.element.x, c.element.y, c.neighbours[0].x, c.neighbours[0].y);
+            if (crossed) {
+                this.currentStep = 0;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private find1Neighbour(): boolean {
+        for (let c of this.combinations) {
+            if (c.neighbours.length !== 1) continue;
+            c.prio = 0;
+        }
+        return false;
+    }
+
     private findElement(e: { x: number; y: number }): number {
         for (let i = 0; i < this.combinations.length; i++) {
             if (this.combinations[i].element.x === e.x && this.combinations[i].element.y === e.y) return i;
         }
+    }
+
+    private getElement(e: { x: number; y: number }): {
+        element: { x: number; y: number };
+        neighbours: Array<{ x: number; y: number; type: string }>;
+        prio: number;
+    } {
+        return this.combinations[this.findElement(e)];
     }
 
     private checkIdentical(e1: { x: number; y: number }, e2: { x: number; y: number }): boolean {
