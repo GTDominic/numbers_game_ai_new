@@ -1,6 +1,11 @@
 class AITree extends AIAbstract {
     private currentStep: number = 0;
-    private nodes: Array<AIT_Node> = [];
+    private nodes: Array<{
+        c: AIT_Node;
+        type: "straightchain" | "chain" | "chainloop" | "loop";
+        prio: number;
+    }> = [];
+    private nextCrosses: Array<{ e1: { x: number; y: number }; e2: { x: number; y: number } }> = [];
 
     public step(): void {
         if (this.finished) return;
@@ -15,11 +20,29 @@ class AITree extends AIAbstract {
                 let neighbours = this.findNeighbours(x, y);
                 if (neighbours.length !== 1) continue;
                 let found = false;
-                for (let n of this.nodes) if (this.findElementInChain(n, { x, y })) found = true;
+                for (let n of this.nodes) if (this.findElementInChain(n.c, { x, y })) found = true;
                 if (found) continue;
-                this.nodes.push(new AIT_Node({ x, y }, "start"));
-                this.buildChain(this.nodes[this.nodes.length - 1]);
+                this.nodes.push({ c: new AIT_Node({ x, y }, "start"), type: null, prio: null });
+                this.buildChain(this.nodes[this.nodes.length - 1].c);
             }
+        }
+        for (let y = 0; y < this.board.getSize(); y++) {
+            for (let x = 0; x < 9; x++) {
+                let value = this.board.getElement(x, y);
+                if (value === null) continue;
+                let neighbours = this.findNeighbours(x, y);
+                if (neighbours.length <= 1) continue;
+                let found = false;
+                for (let n of this.nodes) if (this.findElementInChain(n.c, { x, y })) found = true;
+                if (found) continue;
+                this.nodes.push({ c: new AIT_Node({ x, y }, "start"), type: "loop", prio: null });
+                this.buildChain(this.nodes[this.nodes.length - 1].c);
+            }
+        }
+        for (let node of this.nodes) {
+            if (node.type === "loop") continue;
+            node.type = this.checkForChainLoops(node.c) ? "chainloop" : "chain";
+            if (node.type === "chain") node.type = this.checkStraight(node.c) ? "straightchain" : "chain";
         }
         console.log(this.nodes);
     }
@@ -75,6 +98,19 @@ class AITree extends AIAbstract {
         let found = false;
         for (let n of chain.next) if (this.findElementInChain(n, search)) found = true;
         return found;
+    }
+
+    private checkForChainLoops(chain: AIT_Node): boolean {
+        if (chain.nextType === "l") return true;
+        let loop = false;
+        for (let n of chain.next) if (this.checkForChainLoops(n)) loop = true;
+        return loop;
+    }
+
+    private checkStraight(chain: AIT_Node): boolean {
+        if (chain.next.length > 1) return false;
+        if (chain.next.length === 0) return true;
+        return this.checkStraight(chain.next[0]);
     }
 
     private checkCoordinates(e1: { x: number; y: number }, e2: { x: number; y: number }): boolean {
