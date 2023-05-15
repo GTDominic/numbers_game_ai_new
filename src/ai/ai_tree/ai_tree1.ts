@@ -35,6 +35,7 @@ class AITree1 extends AITreeAbstract {
     private crossesHandler(prio: number, chain: AIT_Node): void {
         if (prio === 4 || prio === 11) this.crossStraight(chain);
         if (prio === 5 || prio === 12) this.crossChain(chain);
+        if ([6, 7, 13, 14].includes(prio)) this.crossLoops(chain);
         if (this.debug) console.log(this.nextCrosses);
         this.currentStep = 0;
     }
@@ -42,11 +43,36 @@ class AITree1 extends AITreeAbstract {
     private crossStraight(chain: AIT_Node): void {
         if (!chain) return;
         if (chain.nextType === "e") return;
-        this.nextCrosses.push({e1: chain.pos, e2: chain.next[0].pos});
+        this.nextCrosses.push({ e1: chain.pos, e2: chain.next[0].pos });
         this.crossStraight(chain.next[0].next[0]);
     }
 
-    private crossChain(chain: AIT_Node): void {
-        
+    private crossChain(chain: AIT_Node, before: AIT_Node = null): void {
+        if (!before) before = chain;
+        if (!this.checkStraight(chain)) {
+            for (let n of chain.next) this.crossChain(n, chain);
+            return;
+        }
+        let length = this.countElements(chain);
+        if (length % 2 === 0) return this.crossStraight(chain);
+        if (chain.type === before.type) return;
+        this.nextCrosses.push({ e1: chain.pos, e2: before.pos });
+        if (length === 1) return;
+        this.crossStraight(chain.next[0]);
+    }
+
+    private crossLoops(chain: AIT_Node): void {
+        this.removeLoops(chain);
+        if(this.checkStraight(chain)) this.crossStraight(chain);
+        else this.crossChain(chain);
+    }
+
+    private removeLoops(chain: AIT_Node): void {
+        for (let i = chain.next.length - 1; i >= 0; i--) {
+            if (chain.next[i].nextType === "l") {
+                chain.next.splice(i, 1);
+                if(chain.next.length === 0 && chain.type !== "start") chain.nextType = "e";
+            } else this.removeLoops(chain.next[i]);
+        }
     }
 }
